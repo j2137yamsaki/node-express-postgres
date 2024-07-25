@@ -14,17 +14,18 @@ const connection = new pg.Pool({
 
 
 
-router.get('/', function (req, res, next) {
-  connection.query(
-  `select * from tasks;`,
-  (error, results) => {
-  console.log(error);
-  console.log(results.rows);
-  res.render('index', {
-  title: 'ToDo App',
-  todos: results.rows, });
-  }
-  );
+  router.get('/', function (req, res, next) {
+    connection.query(
+      `select * from tasks;`,
+      (error, results) => {
+        console.log(error);
+        console.log(results.rows);
+        res.render('index', {
+          title: 'ToDo App',
+          todos: results.rows,
+        });
+      }
+    );
   });
   
 
