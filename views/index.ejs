@@ -26,11 +26,11 @@
               </div>
               <div class="form-group">
                 <label for="deadline">期限</label>
-                <input id="deadline" required type="date" name="deadline"/>
+                <input id="deadlines" required type="date" name="deadline"/>
               </div>
               <div class="form-group">
                 <label for="priority">重要度</label>
-                <select id="priority" name="priority">
+                <select id="prioritys" name="priority">
                   <option value="low">低</option>
                   <option value="medium">中</option>
                   <option value="high">高</option>
@@ -51,6 +51,8 @@
         <% } else { %>
           <section class="welcome-section">
             <h2>Welcome to the TodoApp</h2>
+            <a href="/signin" class="signin-button">Sign in now!</a>
+            <br>
             <a href="/signup" class="signup-button">Sign up now!</a>
           </section>
         <% } %>
@@ -60,4 +62,7 @@
     </footer>
 </body>
 </html>
+
+
+
 

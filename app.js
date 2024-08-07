@@ -3,17 +3,23 @@ const express = require('express');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
-const cookieSession = require("cookie-session");
-const secret = "secretCuisine123";
+const cookieSession = require('cookie-session');
+const bodyParser = require('body-parser');
 
 const app = express();
+const secret = "secretCuisine123";
+
+function ensureAuthenticated(req, res, next) {
+  if (req.session.user) {
+    return next();
+  }
+  res.redirect('/signin');
+}
 
 app.use(
   cookieSession({
-    name: "session",
+    name: 'session',
     keys: [secret],
-
-    // Cookie Options
     maxAge: 24 * 60 * 60 * 1000, // 24 hours
   })
 );
@@ -28,21 +34,58 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// router
-app.use('/', require('./routes'));
+app.use(bodyParser.urlencoded({ extended: true }));
 
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
+let todos = [];
+
+app.get('/', (req, res) => {
+  const isAuth = req.session.user ? true : false;
+  res.render('index', { title: 'TodoApp', isAuth: isAuth, todos: isAuth ? todos : [] });
+});
+
+app.post('/', ensureAuthenticated, (req, res) => {
+  const { add, deadline, priority } = req.body;
+  const newTodo = {
+    content: add,
+    deadline: deadline,
+    priority: priority,
+  };
+  todos.push(newTodo);
+  res.redirect('/');
+});
+
+app.post('/signin', (req, res) => {
+  const user = { username: req.body.username }; // Replace with actual user lookup
+  req.session.user = user;
+  res.redirect('/');
+});
+
+app.get('/signin', (req, res) => {
+  res.render('signin', { title: 'Sign In' });
+});
+
+app.post('/signup', (req, res) => {
+  const user = { username: req.body.username }; // Replace with actual user registration logic
+  req.session.user = user;
+  res.redirect('/');
+});
+
+app.get('/signup', (req, res) => {
+  res.render('signup', { title: 'Sign Up' });
+});
+
+app.get('/logout', (req, res) => {
+  req.session = null;
+  res.redirect('/');
+});
+
+app.use((req, res, next) => {
   next(createError(404));
 });
 
-// error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
+app.use((err, req, res, next) => {
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
   res.status(err.status || 500);
   res.render('error');
 });
