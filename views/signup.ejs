@@ -1,24 +1,65 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
 <head>
   <meta charset='utf-8'>
   <meta http-equiv='X-UA-Compatible' content='IE=edge'>
   <title><%= title %></title>
   <meta name='viewport' content='width=device-width, initial-scale=1'>
+  <link rel='stylesheet' href='/stylesheets/style2.css'/>
+  <script>
+    function togglePasswordVisibility() {
+      var passwordField = document.getElementById('password');
+      var repasswordField = document.getElementById('repassword');
+      if (passwordField.type === 'password') {
+        passwordField.type = 'text';
+        repasswordField.type = 'text';
+      } else {
+        passwordField.type = 'password';
+        repasswordField.type = 'password';
+      }
+    }
+
+    function validateForm(event) {
+      var passwordField = document.getElementById('password');
+      var repasswordField = document.getElementById('repassword');
+      var errorField = document.getElementById('error-message');
+
+      if (passwordField.value !== repasswordField.value) {
+        errorField.textContent = 'パスワードが一致しません。';
+        event.preventDefault();
+      } else {
+        errorField.textContent = '';
+      }
+    }
+  </script>
 </head>
 <body>
-    <%- include('./error_messages'); %>
-<form action="/signup" method="post">
-  <label>ユーザ名</label>
-  <input required type="text" name="username"/>
-  <br>
-  <label>パスワード</label>
-  <input required type="password" name="password"/>
-  <br>
-  <label>パスワード再入力</label>
-  <input required type="text" name="repassword"/>
-  <br>
-  <input type="submit" value="Sign up"/>
-</form>
+    <header>
+        <h1>TodoApp Sign Up</h1>
+    </header>
+    <main>
+        <section class="signup-section">
+            <%- include('./error_messages'); %>
+            <form action="/signup" method="post" class="signup-form" onsubmit="validateForm(event)">
+                <label for="username">ユーザ名</label>
+                <input id="username" required type="text" name="username"/>
+                <br>
+                <label for="password">パスワード</label>
+                <input id="password" required type="password" name="password"/>
+                <br>
+                <label for="repassword">パスワード再入力</label>
+                <input id="repassword" required type="password" name="repassword"/>
+                <br>
+                <input type="checkbox" onclick="togglePasswordVisibility()"> パスワードを表示
+                <br>
+                <span id="error-message" style="color: red;"></span>
+                <br>
+                <button type="submit">Sign up</button>
+            </form>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2024 TodoApp. All rights reserved.</p>
+    </footer>
 </body>
 </html>
