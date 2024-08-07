@@ -1,25 +1,63 @@
 <!DOCTYPE html>
-<html>
+<html lang="ja">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><%= title %></title>
   <link rel='stylesheet' href='/stylesheets/style.css'/>
 </head>
 <body>
-    <%- include('./error_messages'); %>
-<% if(isAuth) { %>
-  <form action="/" method="post">
-    <label>タスクの追加</label>
-    <input required type="text" name="add" placeholder="何をする?"/>
-    <input type="submit" value="追加"/>
-  </form>
-  <ul>
-    <% for(let todo of todos){ %>
-      <li><span><%= todo.content %></span></li>
-    <% } %>
-  </ul>
-<% } else { %>
-  <h1>Welcome to the TodoApp</h1>
-  <a href="/signup">Sign up now!</a>
-<% } %>
+    <header>
+        <h1>TodoApp</h1>
+        <% if(isAuth) { %>
+          <nav>
+            <a href="/logout">ログアウト</a>
+          </nav>
+        <% } %>
+    </header>
+    <main>
+        <%- include('./error_messages'); %>
+        <% if(isAuth) { %>
+          <section class="todo-section">
+            <form action="/" method="post" class="todo-form">
+              <div class="form-group">
+                <label for="task">タスクの追加</label>
+                <input id="task" required type="text" name="add" placeholder="何をする?"/>
+              </div>
+              <div class="form-group">
+                <label for="deadline">期限</label>
+                <input id="deadline" required type="date" name="deadline"/>
+              </div>
+              <div class="form-group">
+                <label for="priority">重要度</label>
+                <select id="priority" name="priority">
+                  <option value="low">低</option>
+                  <option value="medium">中</option>
+                  <option value="high">高</option>
+                </select>
+              </div>
+              <button type="submit">追加</button>
+            </form>
+            <ul class="todo-list">
+              <% todos.forEach(todo => { %>
+                <li class="todo-item">
+                  <span class="todo-content"><%= todo.content %></span>
+                  <span class="todo-deadline">期限: <%= todo.deadline %></span>
+                  <span class="todo-priority">重要度: <%= todo.priority %></span>
+                </li>
+              <% }); %>
+            </ul>
+          </section>
+        <% } else { %>
+          <section class="welcome-section">
+            <h2>Welcome to the TodoApp</h2>
+            <a href="/signup" class="signup-button">Sign up now!</a>
+          </section>
+        <% } %>
+    </main>
+    <footer>
+        <p>&copy; 2024 TodoApp. All rights reserved.</p>
+    </footer>
 </body>
 </html>
+
